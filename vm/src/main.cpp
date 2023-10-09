@@ -1,4 +1,7 @@
 #include <iostream>
+#include <string>
+#include "VirtualMachine.hpp"
+
 /**
  * Print the usage into cerr
 */
@@ -21,28 +24,32 @@ void printUsage() {
  * @param char* Passthrough of main function argv input
  * @return 0 if the command line is valid, an error code otherwise
  */
-int verifyCommand(int argc, const char* const argv[]) {
+int parseCommandLine(int argc, const char* const argv[], VirtualMachine& vm) {
   auto atLeastOneChampionDefined = false;
 
   for (auto i = 1; i < argc; ++i) {
     const std::string& arg = argv[i];
     const auto isLastArgument = (i == argc - 1);
-    const auto isModifier = arg == "-dump" || arg == "-n" || arg == "-a";
+    const auto isKnownArgument = arg == "-dump" || arg == "-n" || arg == "-a";
 
     // Check if we have at least one champion defined in the command line
     if (!atLeastOneChampionDefined && arg.ends_with(".cor")) {
       atLeastOneChampionDefined = true;
     }
     // Check if arguments have a value defined after
-    if (isModifier && isLastArgument) {
+    if (isKnownArgument && isLastArgument) {
       std::cerr << "Argument '" << arg << "' requires a value\n\n";
       printUsage();
       return -2;
     }
-    // Check if arguments which expects an integer after actually do so
-    if (isModifier) {
+    // Check a valid value if provided for the argument
+    if (isKnownArgument) {
       try {
         const auto value = std::stoi(argv[i + 1]);
+        // Now, actually treat the command
+        if (arg == "-dump") {
+          vm.setDumpMemoryCycle(value);
+        }
       } catch (std::exception const& e) {
         std::cerr << "Argument '" << arg << "' requires a valid integer value. Provided '" << argv[i + 1] << "' is not valid\n\n";
         printUsage();
@@ -52,7 +59,7 @@ int verifyCommand(int argc, const char* const argv[]) {
   }
 
   if (!atLeastOneChampionDefined) {
-    std::cout << "Nothing to run, you did not defined any 'prog_name.cor' in the command line\n\n";
+    std::cout << "[VM] Nothing to run, you did not provide any '.cor' in the command line\n\n";
     printUsage();
   }
 
@@ -60,9 +67,19 @@ int verifyCommand(int argc, const char* const argv[]) {
 }
 
 int main(int argc, char* argv[]) {
-  int errorCode = verifyCommand(argc, argv);
-  if (errorCode != 0) {
-    return errorCode;
+  try {
+    VirtualMachine vm;
+
+    int errorCode = parseCommandLine(argc, argv, vm);
+    if (errorCode != 0) {
+      return errorCode;
+    }
+  } catch (const std::exception &e) {
+    std::cerr << e.what();
+    return -1;
   }
+
   return 0;
 }
+
+// "\\Mac\Home\Documents\c++\corewar\resources\42.cor"
