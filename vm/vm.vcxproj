@@ -27,11 +27,15 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Champion.cpp" />
+    <ClCompile Include="src\ChampionReader.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\VirtualMachine.cpp" />
   </ItemGroup>
   <ItemGroup>
-  </ItemGroup>
+    <ClInclude Include="src\Champion.hpp" />
+    <ClInclude Include="src\ChampionReader.hpp" />
+    <ClInclude Include="src\ErrorCode.hpp" />
     <ClInclude Include="src\VirtualMachine.hpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
