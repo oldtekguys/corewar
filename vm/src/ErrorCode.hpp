@@ -1,0 +1,14 @@
+#ifndef ERROR_CODE
+#define ERROR_CODE
+
+enum class ErrorCode {
+  OK = 0,
+  UNKNOWN_ERROR = -1,
+  MISSING_ARG_VALUE = -2,
+  INVALID_ARG_VALUE = -3,
+  TOO_MANY_CHAMPION = -4,
+  INVALID_PROGRAM_LENGTH = -5,
+  TOO_MANY_CHAMPION_UNEXPECTED = -6,
+};
+
+#endif
